@@ -123,3 +123,39 @@ async def sensorNodeConfiguration(dashboard: QtCore.QObject, demo_name: str):
     except Exception as e:
         dashboard.logger.error(f"Error during {demo_name}: {str(e)}")
         raise
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def lessonsMenu(dashboard: QtCore.QObject, demo_name: str):
+    """ 
+    Opens a lesson in a browser.
+    """
+    try:
+        dashboard.logger.debug(f"Demo Action Started: {demo_name} - Opening Lesson")
+        
+        # Call the Z-Wave Lesson function
+        MenuBarSlots._slotMenuLessonZ_WaveClicked()
+
+        # Inform the user that the browser is left open
+        dashboard.logger.info(f"Demo Action: {demo_name} - Lesson opened. Please close it manually when done.")
+    except Exception as e:
+        dashboard.logger.error(f"Error during {demo_name}: {str(e)}")
+        raise
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def helpMenu(dashboard: QtCore.QObject, demo_name: str):
+    """ 
+    Opens sample help menu items.
+    """
+    try:
+        dashboard.logger.debug(f"Demo Action Started: {demo_name} - Opening User Manual")
+        
+        # Call the User Manual function
+        MenuBarSlots._slotMenuHelpUserManualClicked()
+
+        # Inform the user that the browser is left open
+        dashboard.logger.info(f"Demo Action: {demo_name} - User Manual opened in browser. Please close it manually when done.")
+    except Exception as e:
+        dashboard.logger.error(f"Error during {demo_name}: {str(e)}")
+        raise

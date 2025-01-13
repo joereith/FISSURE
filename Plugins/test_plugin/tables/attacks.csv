@@ -1,1 +1,2 @@
-,test_plugin,Hello Plugin!,fsk,802.11x Adapter,Python 3 Script,1_plugin_install_test.py,Spoofing,maint-3.10
+id,protocol,attack_name,modulation_type,hardware,attack_type,filename,category_name,version
+483,802.11x,plugin,Default,802.11x Adapter,Python2 Script,plugin.py,Spoofing,maint-3.8

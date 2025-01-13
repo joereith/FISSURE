@@ -108,7 +108,7 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Temporarily Disable Plugin Tabs until Developed Further
         self.ui.tabWidget_sensor_nodes.setTabEnabled(2, False)
-        self.ui.tabWidget_library.setTabEnabled(4, False)
+        # self.ui.tabWidget_library.setTabEnabled(4, False)
 
         # Disable Buttons for Disconnected HIPRFISR
         self.ui.pushButton_top_node2.setVisible(False)
@@ -173,6 +173,8 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Show the Dialog
         self.show()
+        self.raise_()          # Needed to maintain taskbar icon if splash screen loses focus
+        self.activateWindow()  # Needed to show dialog if splash screen loses focus
 
 
     def __init_Automation__(self):
@@ -816,19 +818,19 @@ class Dashboard(QtWidgets.QMainWindow):
         # Plugins Edit Tables Headers
         get_table_names = list(fissure.utils.DATABASE_TABLE_HEADERS.keys())
         get_tables = [
-            self.ui.tableWidget1_library_plugin_archive_collection,
-            self.ui.tableWidget1_library_plugin_archive_favorites,
-            self.ui.tableWidget1_library_plugin_attack_categories,
-            self.ui.tableWidget1_library_plugin_attacks,
-            self.ui.tableWidget1_library_plugin_conditioner_flow_graphs,
-            self.ui.tableWidget1_library_plugin_demodulation_flow_graphs,
-            self.ui.tableWidget1_library_plugin_detector_flow_graphs,
-            self.ui.tableWidget1_library_plugin_inspection_flow_graphs,
-            self.ui.tableWidget1_library_plugin_modulation_types,
-            self.ui.tableWidget1_library_plugin_packet_types,
-            self.ui.tableWidget1_library_plugin_protocols,
-            self.ui.tableWidget1_library_plugin_soi_data,
-            self.ui.tableWidget1_library_plugin_triggers,
+            self.ui.tableWidget_library_plugin_archive_collection,
+            self.ui.tableWidget_library_plugin_archive_favorites,
+            self.ui.tableWidget_library_plugin_attack_categories,
+            self.ui.tableWidget_library_plugin_attacks,
+            self.ui.tableWidget_library_plugin_conditioner_flow_graphs,
+            self.ui.tableWidget_library_plugin_demodulation_flow_graphs,
+            self.ui.tableWidget_library_plugin_detector_flow_graphs,
+            self.ui.tableWidget_library_plugin_inspection_flow_graphs,
+            self.ui.tableWidget_library_plugin_modulation_types,
+            self.ui.tableWidget_library_plugin_packet_types,
+            self.ui.tableWidget_library_plugin_protocols,
+            self.ui.tableWidget_library_plugin_soi_data,
+            self.ui.tableWidget_library_plugin_triggers,
         ]
         for idx, table in enumerate(get_tables):
             table.setColumnCount(len(fissure.utils.DATABASE_TABLE_HEADERS[get_table_names[idx]]))
@@ -839,6 +841,36 @@ class Dashboard(QtWidgets.QMainWindow):
             table.resizeColumnsToContents()
             table.horizontalHeader().setStretchLastSection(False)
             table.horizontalHeader().setStretchLastSection(True)
+
+        # Plugin Editor Supporting Files Tables
+        get_support_tables = [
+            self.ui.tableWidget_library_plugin_archive_collection_support,
+            self.ui.tableWidget_library_plugin_archive_favorites_support,
+            self.ui.tableWidget_library_plugin_attack_categories_support,
+            self.ui.tableWidget_library_plugin_attacks_support,
+            self.ui.tableWidget_library_plugin_conditioner_flow_graphs_support,
+            self.ui.tableWidget_library_plugin_demodulation_flow_graphs_support,
+            self.ui.tableWidget_library_plugin_detector_flow_graphs_support,
+            self.ui.tableWidget_library_plugin_inspection_flow_graphs_support,
+            self.ui.tableWidget_library_plugin_modulation_types_support,
+            self.ui.tableWidget_library_plugin_packet_types_support,
+            self.ui.tableWidget_library_plugin_protocols_support,
+            self.ui.tableWidget_library_plugin_soi_data_support,
+            self.ui.tableWidget_library_plugin_triggers_support,
+        ]
+        for idx, table in enumerate(get_support_tables):
+            table.setColumnWidth(0, 534)  #535
+            table.setColumnWidth(1, 74)
+            table.setColumnWidth(2, 534)
+            table.setColumnWidth(3, 36)  #36
+            # table.resizeColumnsToContents()
+            # table.horizontalHeader().setStretchLastSection(False)
+            # table.horizontalHeader().setStretchLastSection(True)
+
+            # component.frontend.ui.tableWidget1_tsi_wideband.resizeColumnsToContents()
+            # component.frontend.ui.tableWidget1_tsi_wideband.resizeRowsToContents()
+            # component.frontend.ui.tableWidget1_tsi_wideband.horizontalHeader().setStretchLastSection(False)
+            # component.frontend.ui.tableWidget1_tsi_wideband.horizontalHeader().setStretchLastSection(True)
 
         # Plugin Widgets
         self.ui.comboBox_library_plugin_new_existing.setCurrentText("Existing")
@@ -3894,6 +3926,18 @@ def connect_library_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_library_plugin_delete.clicked.connect(
         lambda: LibraryTabSlots._slotLibraryPluginPluginDelete(dashboard)
     )
+    dashboard.ui.pushButton_library_plugin_support_add_row.clicked.connect(
+        lambda: LibraryTabSlots._slotLibraryPluginSupportAddClicked(dashboard)
+    )
+    dashboard.ui.pushButton_library_plugin_support_delete_row.clicked.connect(
+        lambda: LibraryTabSlots._slotLibraryPluginSupportDeleteClicked(dashboard)
+    )
+    dashboard.ui.pushButton_library_plugin_support_reset.clicked.connect(
+        lambda: LibraryTabSlots._slotLibraryPluginSupportResetClicked(dashboard)
+    )
+    dashboard.ui.pushButton_library_plugin_support_reset_all.clicked.connect(
+        lambda: LibraryTabSlots._slotLibraryPluginSupportResetAllClicked(dashboard)
+    )    
 
     # Radio Button
     dashboard.ui.radioButton_library_search_binary.clicked.connect(

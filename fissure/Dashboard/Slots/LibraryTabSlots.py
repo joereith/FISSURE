@@ -909,35 +909,48 @@ def _slotLibraryPluginEditChanged(dashboard: QtCore.QObject):
     """
     Changes the table and stackedwidget page for viewing/editing plugins.
     """
-    # Change Stacked Widget Page
+    # Change Stacked Widget Pages
     get_table_name = str(dashboard.ui.comboBox_library_plugin_edit.currentText())
 
     if get_table_name == "archive_collection":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(0)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(0)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(0)
     elif get_table_name == "archive_favorites":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(1)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(1)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(1)
     elif get_table_name == "attack_categories":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(2)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(2)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(2)
     elif get_table_name == "attacks":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(3)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(3)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(3)
     elif get_table_name == "conditioner_flow_graphs":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(4)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(4)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(4)
     elif get_table_name == "demodulation_flow_graphs":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(5)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(5)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(5)
     elif get_table_name == "detector_flow_graphs":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(6)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(6)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(6)
     elif get_table_name == "inspection_flow_graphs":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(7)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(7)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(7)
     elif get_table_name == "modulation_types":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(8)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(8)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(8)
     elif get_table_name == "packet_types":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(9)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(9)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(9)
     elif get_table_name == "protocols":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(10)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(10)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(10)
     elif get_table_name == "soi_data":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(11)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(11)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(11)
     elif get_table_name == "triggers":
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(12)
+        dashboard.ui.stackedWidget_library_plugin_support.setCurrentIndex(12)
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(12)
     else:
         return
     
@@ -948,7 +961,7 @@ def _slotLibraryPluginAddRowClicked(dashboard: QtCore.QObject):
     Adds a row to the current Edit Plugin table.
     """
     # Get the Current Page
-    current_page = dashboard.ui.stackedWidget_library_plugin.currentWidget()
+    current_page = dashboard.ui.stackedWidget_library_plugin_tables.currentWidget()
 
     # Find the QTableWidget on the Current Page
     get_table = current_page.findChild(QtWidgets.QTableWidget)
@@ -969,7 +982,7 @@ def _slotLibraryPluginDeleteRowClicked(dashboard: QtCore.QObject):
     Deletes a row from the current Edit Plugin table.
     """
     # Get the Current Page and Table Widget
-    current_page = dashboard.ui.stackedWidget_library_plugin.currentWidget()
+    current_page = dashboard.ui.stackedWidget_library_plugin_tables.currentWidget()
     get_table = current_page.findChild(QtWidgets.QTableWidget)
     if get_table:
         # Get the Currently Selected Row
@@ -997,7 +1010,7 @@ def _slotLibraryPluginClearTableClicked(dashboard: QtCore.QObject):
     Clears the current Edit Plugin table.
     """
     # Remove All Rows
-    current_page = dashboard.ui.stackedWidget_library_plugin.currentWidget()
+    current_page = dashboard.ui.stackedWidget_library_plugin_tables.currentWidget()
     get_table = current_page.findChild(QtWidgets.QTableWidget)
     if get_table:
         get_table.setRowCount(0)
@@ -1011,8 +1024,8 @@ def _slotLibraryPluginClearAllTablesClicked(dashboard: QtCore.QObject):
     Clears all the Edit Plugin tables.
     """
     # Iterate through all Pages in the Stacked Widget
-    for index in range(dashboard.ui.stackedWidget_library_plugin.count()):
-        page = dashboard.ui.stackedWidget_library_plugin.widget(index)
+    for index in range(dashboard.ui.stackedWidget_library_plugin_tables.count()):
+        page = dashboard.ui.stackedWidget_library_plugin_tables.widget(index)
         
         # Find all QTableWidget Instances on the Current Page
         tables = page.findChildren(QtWidgets.QTableWidget)
@@ -1043,7 +1056,7 @@ def _slotLibraryBrowseCopyClicked(dashboard: QtCore.QObject):
     
     # Get the Target Table via the Combobox and Stacked Widget
     target_page_index = dashboard.ui.comboBox_library_browse.currentIndex()
-    target_page = dashboard.ui.stackedWidget_library_plugin.widget(target_page_index)
+    target_page = dashboard.ui.stackedWidget_library_plugin_tables.widget(target_page_index)
     target_table = target_page.findChild(QtWidgets.QTableWidget)
 
     if not target_table:
@@ -1089,8 +1102,8 @@ def _slotLibraryPluginExportTablesClicked(dashboard: QtCore.QObject):
     # Iterate over the ComboBox items
     for index in range(dashboard.ui.comboBox_library_plugin_edit.count()):
         table_name = dashboard.ui.comboBox_library_plugin_edit.itemText(index)
-        dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(index)
-        current_page = dashboard.ui.stackedWidget_library_plugin.currentWidget()
+        dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(index)
+        current_page = dashboard.ui.stackedWidget_library_plugin_tables.currentWidget()
 
         # Find the table widget on the current page
         target_table = current_page.findChild(QtWidgets.QTableWidget)
@@ -1117,6 +1130,13 @@ def _slotLibraryPluginExportTablesClicked(dashboard: QtCore.QObject):
         try:
             with open(csv_filepath, mode="w", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
+
+                # Write the table headers as the first row
+                headers = [
+                    target_table.horizontalHeaderItem(col).text() if target_table.horizontalHeaderItem(col) else ""
+                    for col in range(target_table.columnCount())
+                ]
+                writer.writerow(headers)
 
                 # Write each row of the table
                 for row in range(target_table.rowCount()):
@@ -1201,33 +1221,67 @@ async def _slotLibraryPluginApplyChangesClicked(dashboard: QtCore.QObject):
     """
     Applies changes to existing plugins by copying all the table data and overwriting the csv files at the HIPRFISR.
     """
+    # Gather Table Data
     table_data = {}
-    
+
     # Iterate through each page of the stacked widget
-    for page_index in range(dashboard.ui.stackedWidget_library_plugin.count()):
-        page = dashboard.ui.stackedWidget_library_plugin.widget(page_index)  # Get the page at index
+    for page_index in range(dashboard.ui.stackedWidget_library_plugin_tables.count()):
+        page = dashboard.ui.stackedWidget_library_plugin_tables.widget(page_index)  # Get the page at index
         target_table = page.findChild(QtWidgets.QTableWidget)  # Find the QTableWidget in the page
         
         if target_table:
-            table_name = target_table.objectName()  # You can use the table's object name as the key
+            database_table_name = str(dashboard.ui.comboBox_library_plugin_edit.itemText(page_index))
             
             # Extract column headers
-            # headers = [target_table.horizontalHeaderItem(col).text() for col in range(target_table.columnCount())]
+            headers = [target_table.horizontalHeaderItem(col).text() for col in range(target_table.columnCount())]
             
             # Extract table rows
             rows = []
+            rows.append(headers)
             for row in range(target_table.rowCount()):
                 row_data = [target_table.item(row, col).text() if target_table.item(row, col) else "" for col in range(target_table.columnCount())]
                 rows.append(row_data)
             
             # Store data in a dictionary with table_name as key
             # table_data[table_name] = {"headers": headers, "rows": rows}
-            table_data[table_name] = {"rows": rows}
+            table_data[database_table_name] = {"rows": rows}
     
     # Convert the dictionary to JSON format for easy transfer (if needed)
     table_data_json = json.dumps(table_data)
 
-    await dashboard.backend.pluginApplyChanges(table_data_json)
+    # Gather Supporting Files
+    supporting_files_data = {}
+
+    # Iterate through each page of the stacked widget
+    for page_index in range(dashboard.ui.stackedWidget_library_plugin_support.count()):
+        page = dashboard.ui.stackedWidget_library_plugin_support.widget(page_index)  # Get the page at index
+        target_table = page.findChild(QtWidgets.QTableWidget)  # Find the QTableWidget in the page
+        
+        if target_table:
+            database_table_name = str(dashboard.ui.comboBox_library_plugin_edit.itemText(page_index))
+            
+            rows = []
+            for row in range(target_table.rowCount()):
+                # First column: Filepath string
+                filepath = target_table.item(row, 0).text() if target_table.item(row, 0) else ""
+
+                # Second column: Combobox value
+                combobox = target_table.cellWidget(row, 1)
+                combobox_value = str(combobox.currentText()) if isinstance(combobox, QtWidgets.QComboBox) else ""
+
+                # Third column: New filepath string
+                new_filepath = target_table.item(row, 2).text() if target_table.item(row, 2) else ""
+
+                # Append the row data to the list
+                rows.append({"filepath": filepath, "action": combobox_value, "new_filepath": new_filepath})
+            
+            # Store rows data under the page name
+            supporting_files_data[database_table_name] = rows
+
+    # Convert the dictionary to JSON format for easy transfer (if needed)
+    supporting_files_data_json = json.dumps(supporting_files_data, indent=4)
+
+    await dashboard.backend.pluginApplyChanges(table_data_json, supporting_files_data_json)
     
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1260,14 +1314,13 @@ def _slotLibraryPluginAppendClicked(dashboard: QtCore.QObject):
     """
     Imports a plugin and appends it to an existing plugin but does not create a new plugin.
     """
-    # Open File Dialog to Select a Folder or ZIP File
-    options = QtWidgets.QFileDialog.Options()
+    # Open File Dialog to Select a ZIP File
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
         None,
-        "Select Plugin Folder or ZIP File",
+        "Select Plugin ZIP File",
         "",
-        "ZIP Files (*.zip);;Folders (*.*)",
-        options=options,
+        "ZIP Files (*.zip)",
+        options=QtWidgets.QFileDialog.Options(),
     )
 
     if not file_path:
@@ -1279,21 +1332,32 @@ def _slotLibraryPluginAppendClicked(dashboard: QtCore.QObject):
     # Check if the Selected File is a ZIP File
     try:
         with pyzipper.AESZipFile(file_path, 'r') as zf:
-            # Check if password is required
+            # If password is required, prompt user
             if zf.pwd is None:
+                # No password required
+                password = ""
+            else:
+                # Prompt for password
                 password, ok = QtWidgets.QInputDialog.getText(
                     None,
                     "Password Required",
                     "Enter password for ZIP archive:",
                     QtWidgets.QLineEdit.Password
                 )
-                if not ok or not password:
+                if not ok:  # User canceled
                     QtWidgets.QMessageBox.warning(
                         None, "Import Canceled", "Password not provided. Operation aborted."
                     )
                     return
 
-                zf.setpassword(password.encode())
+                if password:
+                    zf.setpassword(password.encode())
+                else:
+                    # If no password provided, but a password is required, return
+                    QtWidgets.QMessageBox.warning(
+                        None, "Password Error", "No password provided for a password-protected ZIP file."
+                    )
+                    return
 
             # Define the extraction path
             extracted_path = os.path.join(os.path.dirname(file_path), "temp_extracted")
@@ -1347,8 +1411,8 @@ def _slotLibraryPluginAppendClicked(dashboard: QtCore.QObject):
                 continue
 
             # Get Corresponding Table Widget
-            dashboard.ui.stackedWidget_library_plugin.setCurrentIndex(current_combobox_index)
-            current_page = dashboard.ui.stackedWidget_library_plugin.currentWidget()
+            dashboard.ui.stackedWidget_library_plugin_tables.setCurrentIndex(current_combobox_index)
+            current_page = dashboard.ui.stackedWidget_library_plugin_tables.currentWidget()
             target_table = current_page.findChild(QtWidgets.QTableWidget)
 
             if target_table:
@@ -1356,6 +1420,11 @@ def _slotLibraryPluginAppendClicked(dashboard: QtCore.QObject):
                 csv_file_path = os.path.join(tables_path, file_name)
                 with open(csv_file_path, "r", newline="") as csv_file:
                     reader = csv.reader(csv_file)
+
+                    # Skip the first row (header)
+                    next(reader, None)  # This skips the first row
+
+                    # Iterate over the rest of the rows and append data to the table
                     for row in reader:
                         target_row = target_table.rowCount()
                         target_table.insertRow(target_row)
@@ -1442,8 +1511,17 @@ async def _slotLibraryPluginOpenClose(dashboard: QtCore.QObject):
         dashboard.ui.label1_library_plugin_edit_plugin.setEnabled(False)
 
         # Clear the Tables
-        for page_index in range(dashboard.ui.stackedWidget_library_plugin.count()):
-            page = dashboard.ui.stackedWidget_library_plugin.widget(page_index)  # Get the page at index
+        for page_index in range(dashboard.ui.stackedWidget_library_plugin_tables.count()):
+            page = dashboard.ui.stackedWidget_library_plugin_tables.widget(page_index)  # Get the page at index
+            target_table = page.findChild(QtWidgets.QTableWidget)  # Find the QTableWidget in the page
+            
+            if target_table:
+                # Set the row count to zero to clear the table
+                target_table.setRowCount(0)
+
+        # Clear the Supporting Files
+        for page_index in range(dashboard.ui.stackedWidget_library_plugin_support.count()):
+            page = dashboard.ui.stackedWidget_library_plugin_support.widget(page_index)  # Get the page at index
             target_table = page.findChild(QtWidgets.QTableWidget)  # Find the QTableWidget in the page
             
             if target_table:
@@ -1491,3 +1569,143 @@ async def _slotLibraryPluginPluginDelete(dashboard: QtCore.QObject):
         await dashboard.backend.pluginDelete(plugin_name, delete_from_library)
 
     
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotLibraryPluginSupportAddClicked(dashboard: QtCore.QObject):
+    """
+    Adds a new empty row to the Supporting Files table.
+    """
+    # Get the Current Page
+    current_page = dashboard.ui.stackedWidget_library_plugin_support.currentWidget()
+
+    # Find the QTableWidget on the Current Page
+    get_table = current_page.findChild(QtWidgets.QTableWidget)
+    if get_table:
+        # Add a new row to the table
+        row_position = get_table.rowCount()
+        get_table.insertRow(row_position)
+        
+        # Add the filepath as a new item
+        filepath_item = QtWidgets.QTableWidgetItem("")
+        filepath_item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        filepath_item.setFlags(filepath_item.flags() & ~QtCore.Qt.ItemIsEditable)
+        get_table.setItem(row_position, 0, filepath_item)
+
+        # Action Comboboxes
+        new_action_combobox = QtWidgets.QComboBox(get_table, objectName='comboBox2_')
+        new_action_combobox.setFixedSize(73, 23)
+        get_table.setCellWidget(row_position, 1, new_action_combobox)
+        new_action_combobox.addItem("Keep")
+        new_action_combobox.addItem("Replace")
+        new_action_combobox.addItem("Delete")
+        new_action_combobox.setCurrentIndex(0)
+        new_action_combobox.setEnabled(False)
+
+        def handle_file_selection(target_table, row_position):
+            file_dialog = QtWidgets.QFileDialog()
+            file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
+            file_dialog.setDirectory(fissure.utils.FISSURE_ROOT)
+            selected_file, _ = file_dialog.getOpenFileName()
+            if selected_file:
+                # Place the selected file in the correct row and column (assume column 2)
+                new_file_item = QtWidgets.QTableWidgetItem(selected_file)
+                new_file_item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                target_table.setItem(row_position, 2, new_file_item)
+
+        new_pushbutton = QtWidgets.QPushButton(get_table, objectName='pushButton_')
+        new_pushbutton.setText("...")
+        new_pushbutton.setFixedSize(36, 23)
+        get_table.setCellWidget(row_position, 3, new_pushbutton)
+        new_pushbutton.clicked.connect(lambda checked, row=row_position: handle_file_selection(get_table, row))
+        get_table.resizeRowsToContents()
+    else:
+        dashboard.logger.info("No QTableWidget found on the current page.")
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotLibraryPluginSupportDeleteClicked(dashboard: QtCore.QObject):
+    """
+    Deletes a newly added row in the Supporting Files table or clears the New Column if Existing is populated.
+    """
+    # Get the Current Page and Table Widget
+    current_page = dashboard.ui.stackedWidget_library_plugin_support.currentWidget()
+    get_table = current_page.findChild(QtWidgets.QTableWidget)
+    if get_table:
+        # Get the Currently Selected Row
+        selected_row = get_table.currentRow()
+
+        # Check if a Valid Row is Selected
+        if selected_row >= 0:
+            get_item = get_table.item(selected_row, 0)
+            if get_item and get_item.text() != "":
+                # Clear New
+                new_file_item = QtWidgets.QTableWidgetItem("")
+                new_file_item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                get_table.setItem(selected_row, 2, new_file_item)
+            else:
+                # Remove the Row
+                get_table.removeRow(selected_row)
+
+            # Select the Next Logical Row, if Any
+            new_row = max(0, selected_row - 1)
+            if get_table.rowCount() > 0:
+                get_table.setCurrentCell(new_row, 0)
+        else:
+            dashboard.logger.info("No row selected!")
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotLibraryPluginSupportResetClicked(dashboard: QtCore.QObject):
+    """
+    Resets all new rows and new column items in the current Supporting Files table.
+    """
+    # Get the Current Page and Table Widget
+    current_page = dashboard.ui.stackedWidget_library_plugin_support.currentWidget()
+    get_table = current_page.findChild(QtWidgets.QTableWidget)
+    if get_table:
+        for row in reversed(range(0, get_table.rowCount())):
+            if row >= 0:
+                get_item = get_table.item(row, 0)
+                if get_item and get_item.text() != "":
+                    # Clear New
+                    new_file_item = QtWidgets.QTableWidgetItem("")
+                    new_file_item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                    get_table.setItem(row, 2, new_file_item)
+
+                    # Reset Combobox
+                    combo_box = get_table.cellWidget(row, 1)  # Get the combobox from the table
+                    if combo_box:
+                        combo_box.setCurrentIndex(0) 
+                else:
+                    # Remove the Row
+                    get_table.removeRow(row)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotLibraryPluginSupportResetAllClicked(dashboard: QtCore.QObject):
+    """
+    Resets all new rows and new column items in all Supporting Files tables.
+    """
+    # Iterate through all Pages in the Stacked Widget
+    for index in range(dashboard.ui.stackedWidget_library_plugin_support.count()):
+        page = dashboard.ui.stackedWidget_library_plugin_support.widget(index)
+        
+        # Find all QTableWidget Instances on the Current Page
+        tables = page.findChildren(QtWidgets.QTableWidget)
+        for table in tables:
+            for row in reversed(range(0, table.rowCount())):
+                if row >= 0:
+                    get_item = table.item(row, 0)
+                    if get_item and get_item.text() != "":
+                        # Clear New
+                        new_file_item = QtWidgets.QTableWidgetItem("")
+                        new_file_item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                        table.setItem(row, 2, new_file_item)
+
+                        # Reset Combobox
+                        combo_box = table.cellWidget(row, 1)  # Get the combobox from the table
+                        if combo_box:
+                            combo_box.setCurrentIndex(0) 
+                    else:
+                        # Remove the Row
+                        table.removeRow(row)
+        

@@ -1809,14 +1809,15 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def pluginApplyChanges(self, table_data_json: dict):
+    async def pluginApplyChanges(self, table_data_json: dict, supporting_files_data_json: dict):
         """
         Overwrites the csv files with table data.
         """
         # Send the Message
         if self.hiprfisr_connected is True:
             PARAMETERS = {
-                "table_data_json": table_data_json
+                "table_data_json": table_data_json,
+                "supporting_files_data_json": supporting_files_data_json
             }
             msg = {
                     fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,

@@ -1,0 +1,2 @@
+id,category,trigger_name,default_settings,filename,file_type,version
+39,Acoustic,plugintest2,None,plugin.py,Python3 Script,maint-3.8

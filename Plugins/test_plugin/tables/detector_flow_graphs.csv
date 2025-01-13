@@ -1,0 +1,2 @@
+id,detector_type,hardware,filename,file_type,version
+58,Sweep,USRP X410,plugin.py,Flow Graph,maint-3.8

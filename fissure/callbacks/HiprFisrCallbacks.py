@@ -2531,6 +2531,7 @@ async def openPluginHiprfisr(component: object, plugin_name: str):
     PARAMETERS = {
         "plugin_name": component.plugin_editor.name,
         "table_data_json": component.plugin_editor.table_data,
+        "install_files": component.plugin_editor.install_files,
     }
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
@@ -2570,7 +2571,7 @@ async def pluginDelete(component: object, plugin_name: str, delete_from_library:
     await requestPluginNamesHiprfisr(component)
 
 
-async def pluginApplyChanges(component: object, table_data_json: dict):
+async def pluginApplyChanges(component: object, table_data_json: dict, supporting_files_data_json: dict):
     """Handle Request for Plugin Names
 
     Parameters
@@ -2578,9 +2579,11 @@ async def pluginApplyChanges(component: object, table_data_json: dict):
     component : object
         Component
     table_data_json : dict
-        Table data from Plugin Editor tab
+        Tables data from Plugin Editor tab
+    supporting_files_data_json : dict
+        Supporting Files data from Plugin Editor tab
     """
-    component.plugin_editor.applyChanges(table_data_json)
+    component.plugin_editor.applyChanges(table_data_json, supporting_files_data_json, component.os_info)
     
 
 async def pluginAddProtocolHiprfisr(component: object, protocol_name: str):
@@ -2660,6 +2663,7 @@ async def pluginRemoveProtocolModTypes(component: object, protocol_name: str, mo
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
     await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
 
 async def pluginEditProtocolPktTypes(component: object, protocol_name: str, pkt_types: List[List[str]]):
     component.plugin_editor.edit_pkt_types(protocol_name, pkt_types)

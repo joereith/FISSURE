@@ -5104,6 +5104,24 @@ async def _slotMenuDemoConfigurationAllClicked(dashboard: QtWidgets.QMainWindow)
         dashboard.logger.info(f"Demo Started: {demo_name2}")
         await DemoConfigurationScripts.toolsMenu(dashboard, demo_name2)
         dashboard.logger.info(f"Demo Completed: {demo_name2}")
+
+        await asyncio.sleep(3)
+        if dashboard.stop_demo_flag:
+            return
+
+        demo_name3 = "Configuration > Lessons Menu"
+        dashboard.logger.info(f"Demo Started: {demo_name3}")
+        await DemoConfigurationScripts.lessonsMenu(dashboard, demo_name3)
+        dashboard.logger.info(f"Demo Completed: {demo_name3}")
+
+        await asyncio.sleep(3)
+        if dashboard.stop_demo_flag:
+            return
+
+        demo_name4 = "Configuration > Help Menu"
+        dashboard.logger.info(f"Demo Started: {demo_name4}")
+        await DemoConfigurationScripts.helpMenu(dashboard, demo_name4)
+        dashboard.logger.info(f"Demo Completed: {demo_name4}")
     
     except Exception as e:
         error_message = f"Error in Demo - {demo_name}: {str(e)}"
@@ -5240,7 +5258,31 @@ async def _slotMenuDemoConfigurationLessonsMenuClicked(dashboard: QtWidgets.QMai
     """
     Executes the demo script and logs its progress.
     """
-    pass
+    # Reset the Flag
+    dashboard.stop_demo_flag = False
+    dashboard.ui.pushButton_demo.setText("Stop Demo Mode")
+
+    # Define Demo Name
+    demo_name = "Configuration > Lessons Menu"
+
+    # Show the Pushbutton
+    dashboard.ui.label_diagram.setVisible(False)
+    dashboard.ui.pushButton_demo.setVisible(True)
+
+    # Execute Demo Steps
+    try:
+        dashboard.logger.info(f"Demo Started: {demo_name}")
+        await DemoConfigurationScripts.lessonsMenu(dashboard, demo_name)
+        dashboard.logger.info(f"Demo Completed: {demo_name}")
+    
+    except Exception as e:
+        error_message = f"Error in Demo - {demo_name}: {str(e)}"
+        dashboard.logger.error(error_message)
+
+    finally:
+        dashboard.stop_demo_flag = False
+        dashboard.ui.pushButton_demo.setVisible(False)
+        dashboard.ui.label_diagram.setVisible(True)
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -5248,7 +5290,31 @@ async def _slotMenuDemoConfigurationHelpMenuClicked(dashboard: QtWidgets.QMainWi
     """
     Executes the demo script and logs its progress.
     """
-    pass
+    # Reset the Flag
+    dashboard.stop_demo_flag = False
+    dashboard.ui.pushButton_demo.setText("Stop Demo Mode")
+
+    # Define Demo Name
+    demo_name = "Configuration > Help Menu"
+
+    # Show the Pushbutton
+    dashboard.ui.label_diagram.setVisible(False)
+    dashboard.ui.pushButton_demo.setVisible(True)
+
+    # Execute Demo Steps
+    try:
+        dashboard.logger.info(f"Demo Started: {demo_name}")
+        await DemoConfigurationScripts.helpMenu(dashboard, demo_name)
+        dashboard.logger.info(f"Demo Completed: {demo_name}")
+    
+    except Exception as e:
+        error_message = f"Error in Demo - {demo_name}: {str(e)}"
+        dashboard.logger.error(error_message)
+
+    finally:
+        dashboard.stop_demo_flag = False
+        dashboard.ui.pushButton_demo.setVisible(False)
+        dashboard.ui.label_diagram.setVisible(True)
 
 
 @qasync.asyncSlot(QtCore.QObject)

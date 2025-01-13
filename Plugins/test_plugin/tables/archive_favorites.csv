@@ -1,0 +1,2 @@
+id,file_name,date,format,modulation,notes,protocol,sample_rate,samples,size,tuned_frequency
+12,testplugin332,2022-03-12,Complex Float 32,CW,Pulses are two different frequencies,Radar,2000000000.0,5000,40.0,2822850000.0

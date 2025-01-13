@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2025-1-13
+
+Plugin updates for Library tab.
+
+### Added
+
+- Lessons Menu, Help Menu demo items
+- Widgets and functionality for plugin support files
+- Library utilities and plugin editor functions for editing plugins
+
+### Changed
+
+- Conditioner flow graph View button now uses database filepath to open flow graphs in GNU Radio Companion
+- Append to plugin now only accepts zip files instead of folders
+- Plugin CSV files need database table headers in first row
+
+### Fixed
+
+- FISSURE icon in taskbar and Dashboard are now visible if splash screen loses focus
+- Updating how async_ok_dialog() is called to prevent heartbeat timeouts
+- Append to plugin no longer fails for zip files without a password
+
 ## 2024-12-22
 
 Endianness tab, unsigned integers, IQ Data tab upgrades.

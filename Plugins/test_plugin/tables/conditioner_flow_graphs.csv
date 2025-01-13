@@ -1,0 +1,2 @@
+id,isolation_category,isolation_method,hardware,file_type,data_type,version,parameter_names,parameter_values,parameter_labels,filepath
+16,Energy - Burst Tagger,plugin,File,Flow Graph,Complex Float 32,maint-3.8,"['threshold', 'cutoff', 'transition', 'beta']","['100e3', '10e3', '6.76', '0.002']","['Cutoff Frequency (Hz)', 'Transition Width (Hz)', 'Filter Beta', 'Amplitude Threshold']",File_Source/Flow_Graphs/ComplexFloat32/burst_tagger/plugin.py

@@ -9,6 +9,8 @@ from fissure.utils import FISSURE_ROOT, get_fg_library_dir
 from decimal import Decimal
 from datetime import datetime, date
 import json
+import re
+from typing import List
 
 
 def openDatabaseConnection() -> connection:
@@ -225,6 +227,25 @@ def getPacketTypesDirect(conn, protocol):
 # the smaller cached FISSURE library/database accessed from
 # outside the HIPRFISR component.
 # =============================================================
+
+def getConditionerFilepath(library, isolation_category, isolation_method, hardware, data_type, version):
+    """
+    Returns the isolation methods from the conditioner_flow_graphs table.
+    """
+    return next(
+        (
+            (str(row[10]), str(row[4]))
+            for row in library["conditioner_flow_graphs"]
+            if (
+                row[1] == isolation_category
+                and row[2] == isolation_method
+                and row[3] == hardware
+                and row[5] == data_type
+                and row[6] == version
+            )
+        ),
+        None,
+    )
 
 def getConditionerIsolationCategory(library, hardware, version):
     """
@@ -761,6 +782,67 @@ def getDetectorFlowGraphsTable(library):
 # FISSURE library/database.
 # =============================================================
 
+def addTableRow(conn: connection, table_name: str, columns: List[str], values: List):
+    """
+    Adds a new row to any FISSURE PostgreSQL database table.
+
+    Parameters:
+        conn (connection): A psycopg2 connection object.
+        table_name (str): The name of the table where the row will be added.
+        columns (List[str]): A list of column names to insert values into.
+        values (List): A list of values corresponding to the columns.
+
+    Raises:
+        Exception: Propagates any exception that occurs during the database operation.
+    """
+    cur = None
+    try:
+        # print("1111")
+        # print(f"Columns: {columns}")
+        # print(f"Values: {values}")
+
+        # Validate input
+        if not columns or not values or len(columns) != len(values):
+            raise ValueError("The number of columns and values must match.")
+
+        # Replace 'None' (string) with Python None for JSON columns
+        processed_values = [None if value == 'None' else value for value in values]
+
+        # Create cursor
+        cur = conn.cursor()
+
+        # Build the SQL query dynamically
+        query = sql.SQL("""
+            INSERT INTO {table} ({columns})
+            VALUES ({placeholders})
+        """).format(
+            table=sql.Identifier(table_name),
+            columns=sql.SQL(", ").join(map(sql.Identifier, columns)),
+            placeholders=sql.SQL(", ").join(sql.Placeholder() for _ in processed_values)
+        )
+
+        # print(f"Query: {query.as_string(conn)}")
+        # print(f"Processed Values: {processed_values}")
+
+        # Execute the query
+        cur.execute(query, processed_values)
+
+        # Commit the transaction
+        conn.commit()
+        # print(f"Row inserted into {table_name}: {processed_values}")
+
+    except Exception as e:
+        # Rollback in case of an error
+        conn.rollback()
+        print(f"Error inserting row into {table_name}: {e}")
+        raise
+
+    finally:
+        # Close the cursor
+        if cur:
+            cur.close()
+
+
 def addArchiveCollection(name, file_list, filepath, files, format, size, notes, parent_id):
     """
     Adds a new archive_collection table to the FISSURE PostgreSQL library.
@@ -1192,53 +1274,83 @@ def removeFromTable(conn, table_name, row_id, delete_files, os_version):
             cur.close()
 
 
-def findMatchingRow(conn, table_name, provided_row):
+def get_varchar_text_columns(conn, table_name):
     """
-    Checks a PostgreSQL table to see if all columns match a provided row 
-    (ignoring the first column, which is the ID).
+    Retrieves the names of columns in the specified table that are of type character varying or text.
 
     Parameters:
-        connection: psycopg2 connection object to the PostgreSQL database.
-        table_name (str): The name of the table to check.
-        provided_row (list): The values to match against (excluding the ID).
+        conn: psycopg2 connection object.
+        table_name (str): The name of the table to inspect.
 
+    Returns:
+        list: A list of column names that are of type character varying or text.
+    """
+    query = sql.SQL("""
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = %s
+        AND data_type IN ('character varying', 'text');
+    """)
+    with conn.cursor() as cursor:
+        cursor.execute(query, (table_name,))
+        varchar_text_columns = [row[0] for row in cursor.fetchall()]
+    return varchar_text_columns
+
+
+def findMatchingRow(conn, table_name, provided_row):
+    """
+    Finds a matching row in a PostgreSQL table by comparing rows, ignoring the first column (ID) and jsonb columns.
+    
+    Parameters:
+        conn: psycopg2 connection object to the PostgreSQL database.
+        table_name (str): The name of the table to search.
+        provided_row (list): The input row to match, with the first value (ID) ignored.
+    
     Returns:
         int: The ID of the matching row, or None if no match is found.
     """
     try:
+        # Get the list of character varying and text columns
+        varchar_text_columns = get_varchar_text_columns(conn, table_name)
+        
         with conn.cursor() as cursor:
-            # Dynamically retrieve column names from the table
-            cursor.execute(sql.SQL("SELECT * FROM {} LIMIT 1").format(sql.Identifier(table_name)))
-            column_names = [desc[0] for desc in cursor.description]
+            # Retrieve all rows from the table (ignoring the first column, ID)
+            cursor.execute(sql.SQL("SELECT * FROM {}").format(sql.Identifier(table_name)))
+            rows = cursor.fetchall()
 
-            if len(provided_row) + 1 != len(column_names):
-                raise ValueError("The provided row does not match the number of columns in the table.")
+            # Iterate through the rows and compare each row, skipping jsonb columns and the first column (ID)
+            for row in rows:
+                match = True
+                # print(f"Comparing with row ID {row[0]}: {row}")  # Debug print for the current row
+                
+                for i, (column_name, value) in enumerate(zip(cursor.description, row)):
+                    column_name = column_name.name
+                    
+                    # Skip the first column (ID) and excluded columns
+                    if i == 0 or column_name not in varchar_text_columns:
+                        continue
+                    
+                    # print(f"Column: {column_name}, Database Value: {value}, Provided Value: {provided_row[i]}")  # Debug print for values being compared
+                    
+                    # Extract provided value
+                    provided_value = provided_row[i]
+                    
+                    # Handle None and 'None' explicitly
+                    if value is None and (provided_value is None or provided_value == 'None'):
+                        continue
+                    if value is not None and str(value) != str(provided_value):
+                        match = False
+                        break
+                
+                if match:
+                    # print(f"Found matching row with ID: {row[0]} in table: {table_name}")
+                    return row[0]  # Return the ID of the matching row
 
-            # Build the WHERE clause dynamically for all columns except the first (ID)
-            conditions = []
-            for i, column_name in enumerate(column_names[1:], start=1):  # Skip the first column (ID)
-                if provided_row[i - 1] is not None:  # Exclude columns with None values from filtering
-                    conditions.append(sql.SQL("{} = %s").format(sql.Identifier(column_name)))
+            # print(f"No matching row found in table: {table_name}")
+            return None
 
-            # Construct the SQL query
-            query = sql.SQL("""
-                SELECT {} FROM {} 
-                WHERE {}
-                LIMIT 1
-            """).format(
-                sql.Identifier(column_names[0]),  # ID column
-                sql.Identifier(table_name),
-                sql.SQL(" AND ").join(conditions)
-            )
-
-            # Execute the query with the provided row values
-            cursor.execute(query, [value for value in provided_row if value is not None])
-            result = cursor.fetchone()
-
-            # Return the ID of the matching row, or None if no match is found
-            return result[0] if result else None
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error processing table {table_name}: {e}")
         return None
 
 

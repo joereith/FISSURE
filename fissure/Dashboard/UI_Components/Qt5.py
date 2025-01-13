@@ -80,7 +80,7 @@ async def async_yes_no_dialog(parent, message_text):
 
 async def async_ok_dialog(parent, message_text, width=None):
     """ 
-    Used for asynchronous message boxes. Needs to be its own class to adjust the width.
+    Used for asynchronous message boxes. Needs to be its own class to adjust the width. Call with asyncio.ensure_future() in Dashboard callbacks.
     """
     msg_box = QtWidgets.QMessageBox(parent)
     msg_box.setText(message_text)

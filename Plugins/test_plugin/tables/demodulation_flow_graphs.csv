@@ -1,1 +1,2 @@
+id,protocol,modulation_type,hardware,filename,output_type,version
 ,test_plugin,fsk,computer,1_test_plugin_demod.py,Stream,

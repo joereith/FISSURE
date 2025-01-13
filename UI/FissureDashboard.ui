@@ -3416,7 +3416,7 @@
   </action>
   <action name="actionDemo_Configuration_Lessons_Menu">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Lessons Menu</string>
@@ -3424,7 +3424,7 @@
   </action>
   <action name="actionDemo_Configuration_Help_Menu">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Help Menu</string>

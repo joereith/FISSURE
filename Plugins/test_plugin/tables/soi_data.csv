@@ -1,1 +1,2 @@
-,test_plugin,test_plugin_channel_0,2401,2400,2402,2,false,fsk,fictional test plugin entry
+id,protocol,soi_name,center_frequency,start_frequency,end_frequency,bandwidth,continuous,modulation,notes
+221,test_pluginbh,802.11a/h/j/n/ac/ax Channel 100,5500.0,5490.0,5510.0,20.0,false,"BPSK, QPSK, 16-QAM, 64-QAM, 256-QAM",None

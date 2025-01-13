@@ -132,6 +132,7 @@ class PluginEditor(object):
 
         # Import plugin data
         self.__importData__()
+        self.install_files = self.list_filepaths(os.path.join(self.basepath, "install_files"))
 
 
     def __importData__(self):
@@ -184,12 +185,40 @@ class PluginEditor(object):
         # print('PROTOCOLS: ' + str(self.protocols))
 
 
-    def applyChanges(self, table_data_json: dict):
+    def list_filepaths(self, root_folder):
+        """
+        Recursively lists all filepaths in the given directory and its subdirectories, relative to the root_folder.
+
+        Parameters:
+            root_folder (str): The root directory to search.
+
+        Returns:
+            list: A list of filepaths relative to the root_folder.
+        """
+        filepaths = []
+        for dirpath, _, filenames in os.walk(root_folder):
+            for filename in filenames:
+                full_path = os.path.join(dirpath, filename)
+                relative_path = os.path.relpath(full_path, root_folder)
+                filepaths.append(relative_path)
+        
+        return filepaths
+
+
+    def applyChanges(self, table_data_json: dict, supporting_files_data_json: dict, os_version: str):
         """
         Overwrites the csv files with table data from the Plugin Editor tab.
         """
+        # Delete Plugin (then rewrite)
+        self.deletePlugin(self.name, True, os_version)
+
+        # Initialize Plugin
+        self.__init__(self.name, PLUGIN_DIR)
+
+        # Rewrite Tables Folder/CSV Files
         # Convert the JSON back to a dictionary
         table_data = json.loads(table_data_json)
+        # print(table_data)
         
         # Find the 'tables' folder
         tables_path = None
@@ -204,7 +233,6 @@ class PluginEditor(object):
 
         # Iterate over the table data
         for table_name, data in table_data.items():
-            # headers = data["headers"]
             rows = data["rows"]
 
             # Construct the CSV file path for the current table
@@ -217,14 +245,64 @@ class PluginEditor(object):
                 writer.writerows(rows)  # Write the rows
             
             # Optionally, notify the user for each table
-            print(f"Table '{table_name}' has been updated in CSV.")
+            # print(f"Table '{table_name}' has been updated in CSV.")
 
         # QtWidgets.QMessageBox.information(None, "Success", "CSV files have been updated!")
+
+        # Update Database
+        try:                
+            # Maintain a Connection to the Database
+            conn = fissure.utils.library.openDatabaseConnection()
+
+            for table_name, data in table_data.items():
+                rows = data["rows"]
+                headers = rows[0]
+                for row in rows[1:]:
+                    fissure.utils.library.addTableRow(conn, table_name, headers, row)
+            # print(table_name)
+            # print(rows)
+
+        except Exception as e:
+            print(f"An error occurred while adding row to database table: {e}")
+            return
+        finally:
+            conn.close()    
+
+        # Update Supporting Files
+        # print("AAAAAAAAAA")
+        # print(supporting_files_data_json)
+        supporting_files_data = json.loads(supporting_files_data_json)
+
+        # Iterate over each key and value in the dictionary
+        for key, value in supporting_files_data.items():
+            # print(f"Key: {key}")
+            
+            # Check if the value is a list and not empty
+            if isinstance(value, list) and value:
+                # print(f"  {key} contains {len(value)} items:")
+                
+                # Iterate through items in the list
+                for item in value:
+                    if isinstance(item, dict):
+                        self.addSupportFiles(key, item, os_version)
+
+                        # # If item is a dictionary, print its keys and values
+                        # for sub_key, sub_value in item.items():
+                        #     print(f"    {sub_key}: {sub_value}")
+
+                    else:
+                        # If item is not a dictionary, print it directly
+                        print(f"    {item}")
+            else:
+                pass
+                # print(f"  {key} is empty or not a list.")
+        
+        # print("BBBBBBBBBBBBB")
 
 
     def deletePlugin(self, plugin_name: str, delete_from_library: bool, os_version: str):
         """
-        Overwrites the csv files with table data from the Plugin Editor tab.
+        Deletes plugins from the library and database.
         """
         if not os.path.isdir(self.basepath):
             print(f"Plugin folder '{plugin_name}' does not exist.")
@@ -259,6 +337,10 @@ class PluginEditor(object):
                         try:
                             with open(csv_file_path, "r", newline="") as csv_file:
                                 reader = csv.reader(csv_file)
+
+                                # Skip the first row (header)
+                                next(reader, None)
+
                                 for row in reader:
                                     # Call the appropriate deletion function for the current table
                                     self.deleteTableRow(conn, table_name, row, os_version)
@@ -292,6 +374,9 @@ class PluginEditor(object):
             Row data from the CSV file.
         """
         # Get Row ID if Exact Match
+        print("Delete table row")
+        print(table_name)
+        print(row)
         row_id = fissure.utils.library.findMatchingRow(conn, table_name, row)  # Fix this
         delete_files = True
         print(row_id)
@@ -299,23 +384,207 @@ class PluginEditor(object):
         # Remove from Database/Library
         if row_id:
             if table_name == "archive_collection":
+                pass  # Extra deletion steps go here
+            elif table_name == "archive_favorites":
+                pass  # Extra deletion steps go here
+            elif table_name == "attack_categories":
+                pass  # Extra deletion steps go here
+            elif table_name == "attacks":
+                # Delete Python Files and Flow Graphs
+                get_file = row[6]
+                get_version = row[8]
+
+                if get_file and get_version:
+                    if get_version in ["maint-3.8", "maint-3.10"]:
+                        library_path = (
+                            fissure.utils.FLOW_GRAPH_LIBRARY_3_8
+                            if get_version == "maint-3.8"
+                            else fissure.utils.FLOW_GRAPH_LIBRARY_3_10
+                        )
+                        get_path = os.path.join(library_path, "Single-Stage Flow Graphs", get_file)
+
+                        # Remove files if they exist
+                        for extension in [".py", ".grc"]:
+                            file_path = get_path.replace(".py", extension)
+                            if os.path.isfile(file_path):
+                                os.system(f'rm "{file_path}"')
+            elif table_name == "conditioner_flow_graphs":
+                # Delete Python Files and Flow Graphs
+                get_file = row[10]
+                get_version = row[6]
+
+                if get_file and get_version:
+                    if get_version in ["maint-3.8", "maint-3.10"]:
+                        library_path = (
+                            fissure.utils.FLOW_GRAPH_LIBRARY_3_8
+                            if get_version == "maint-3.8"
+                            else fissure.utils.FLOW_GRAPH_LIBRARY_3_10
+                        )
+                        get_path = os.path.join(library_path, "TSI Flow Graphs", "Conditioner", get_file)
+
+                        # Remove files if they exist
+                        for extension in [".py", ".grc"]:
+                            file_path = get_path.replace(".py", extension)
+                            if os.path.isfile(file_path):
+                                os.system(f'rm "{file_path}"')
+            elif table_name == "demodulation_flow_graphs":
+                # Delete Python Files and Flow Graphs
+                get_file = row[4]
+                get_version = row[6]
+
+                if get_file and get_version:
+                    if get_version in ["maint-3.8", "maint-3.10"]:
+                        library_path = (
+                            fissure.utils.FLOW_GRAPH_LIBRARY_3_8
+                            if get_version == "maint-3.8"
+                            else fissure.utils.FLOW_GRAPH_LIBRARY_3_10
+                        )
+                        get_path = os.path.join(library_path, "PD Flow Graphs", get_file)
+
+                        # Remove files if they exist
+                        for extension in [".py", ".grc"]:
+                            file_path = get_path.replace(".py", extension)
+                            if os.path.isfile(file_path):
+                                os.system(f'rm "{file_path}"')
+            elif table_name == "detector_flow_graphs":
+                # Delete Python Files and Flow Graphs
+                get_file = row[3]
+                get_version = row[5]
+
+                if get_file and get_version:
+                    if get_version in ["maint-3.8", "maint-3.10"]:
+                        library_path = (
+                            fissure.utils.FLOW_GRAPH_LIBRARY_3_8
+                            if get_version == "maint-3.8"
+                            else fissure.utils.FLOW_GRAPH_LIBRARY_3_10
+                        )
+                        get_path = os.path.join(library_path, "TSI Flow Graphs", "Detectors", get_file)
+
+                        # Remove files if they exist
+                        for extension in [".py", ".grc"]:
+                            file_path = get_path.replace(".py", extension)
+                            if os.path.isfile(file_path):
+                                os.system(f'rm "{file_path}"')
+            elif table_name == "inspection_flow_graphs":
+                # Delete Python Files and Flow Graphs
+                get_file = row[2]
+                get_version = row[3]
+
+                if get_file and get_version:
+                    if get_version in ["maint-3.8", "maint-3.10"]:
+                        library_path = (
+                            fissure.utils.FLOW_GRAPH_LIBRARY_3_8
+                            if get_version == "maint-3.8"
+                            else fissure.utils.FLOW_GRAPH_LIBRARY_3_10
+                        )
+                        get_path = os.path.join(library_path, "Inspection Flow Graphs", get_file)
+
+                        # Remove files if they exist
+                        for extension in [".py", ".grc"]:
+                            file_path = get_path.replace(".py", extension)
+                            if os.path.isfile(file_path):
+                                os.system(f'rm "{file_path}"')
+            elif table_name == "modulation_types":
+                pass  # Extra deletion steps go here
+            elif table_name == "packet_types":
+                pass  # Extra deletion steps go here
+            elif table_name == "protocols":
+                pass  # Extra deletion steps go here
+            elif table_name == "soi_data":
+                pass  # Extra deletion steps go here
+            elif table_name == "triggers":
+                # Delete Python Files
+                get_file = row[4]
+                get_version = row[6]
+
+                if get_file and get_version:
+                    if get_version in ["maint-3.8", "maint-3.10"]:
+                        library_path = (
+                            fissure.utils.FLOW_GRAPH_LIBRARY_3_8
+                            if get_version == "maint-3.8"
+                            else fissure.utils.FLOW_GRAPH_LIBRARY_3_10
+                        )
+                        get_path = os.path.join(library_path, "Triggers", get_file)
+
+                        # Remove file if it exists
+                        if os.path.isfile(get_path):
+                            os.system(f'rm "{get_path}"')
+
+                # Secondary Trigger Files (Future)
+
+            else:
+                print(f"No deletion logic defined for table '{table_name}'. Skipping row: {row}")
+                return
+            
+            # Remove From Table
+            fissure.utils.library.removeFromTable(conn, table_name, row_id, delete_files, os_version)
+            
+
+    def addSupportFiles(self, table_name, row_dict, os_version):
+        """
+        Adds support files to the FISSURE library and plugin directory.
+        """
+        # print("Delete table row")
+        # print(table_name)
+        # print(row_dict)
+        # Remove then Add
+        if row_dict:
+            # Remove from Plugin and Library
+            get_filepath = row_dict["filepath"]
+            get_new_filepath = row_dict["new_filepath"]
+            if row_dict["action"] == "Keep":
                 pass
-                # fissure.utils.library.removeFromTable(conn, table_name, row_id, delete_files, os_version)
+            elif row_dict["action"] == "Replace":
+                # Delete Existing Support Files
+                plugin_filepath = os.path.join(self.basepath, "install_files", get_filepath)
+                library_filepath = os.path.join(fissure.utils.FISSURE_ROOT, get_filepath)
+                if os.path.isfile(plugin_filepath):
+                    os.system(f'rm "{plugin_filepath}"')
+                if os.path.isfile(library_filepath):
+                    os.system(f'rm "{library_filepath}"')
+
+            elif row_dict["action"] == "Delete":
+                # Delete Existing Support Files
+                plugin_filepath = os.path.join(self.basepath, "install_files", get_filepath)
+                library_filepath = os.path.join(fissure.utils.FISSURE_ROOT, get_filepath)
+                if os.path.isfile(plugin_filepath):
+                    os.system(f'rm "{plugin_filepath}"')
+                if os.path.isfile(library_filepath):
+                    os.system(f'rm "{library_filepath}"')
+
+            # Add to Plugin and Library
+            if table_name == "archive_collection":
+                pass
             elif table_name == "archive_favorites":
                 pass
             elif table_name == "attack_categories":
                 pass
             elif table_name == "attacks":
-                pass
-                # fissure.utils.library.removeFromTable(conn, table_name, row_id, delete_files, os_version)
+                if get_new_filepath:
+                    plugin_filepath = os.path.join(fissure.utils.get_plugin_fg_library_dir(os_version, self.basepath), "Single-Stage Flow Graphs", os.path.basename(get_new_filepath))
+                    library_filepath = os.path.join(fissure.utils.get_fg_library_dir(os_version), "Single-Stage Flow Graphs", os.path.basename(get_new_filepath))
+                    self.copySupportFiles(get_new_filepath, plugin_filepath, library_filepath)
             elif table_name == "conditioner_flow_graphs":
-                pass
+                if get_new_filepath:
+                    # Put all conditioner flow graphs in one folder?
+                    plugin_filepath = os.path.join(fissure.utils.get_plugin_fg_library_dir(os_version, self.basepath), "TSI Flow Graphs", "Conditioner", os.path.basename(get_new_filepath))
+                    library_filepath = os.path.join(fissure.utils.get_fg_library_dir(os_version), "TSI Flow Graphs", "Conditioner", os.path.basename(get_new_filepath))
+                    self.copySupportFiles(get_new_filepath, plugin_filepath, library_filepath)
             elif table_name == "demodulation_flow_graphs":
-                pass
+                if get_new_filepath:
+                    plugin_filepath = os.path.join(fissure.utils.get_plugin_fg_library_dir(os_version, self.basepath), "PD Flow Graphs", os.path.basename(get_new_filepath))
+                    library_filepath = os.path.join(fissure.utils.get_fg_library_dir(os_version), "PD Flow Graphs", os.path.basename(get_new_filepath))
+                    self.copySupportFiles(get_new_filepath, plugin_filepath, library_filepath)
             elif table_name == "detector_flow_graphs":
-                pass
+                if get_new_filepath:
+                    plugin_filepath = os.path.join(fissure.utils.get_plugin_fg_library_dir(os_version, self.basepath), "TSI Flow Graphs", "Detectors", os.path.basename(get_new_filepath))
+                    library_filepath = os.path.join(fissure.utils.get_fg_library_dir(os_version), "TSI Flow Graphs", "Detectors", os.path.basename(get_new_filepath))
+                    self.copySupportFiles(get_new_filepath, plugin_filepath, library_filepath)
             elif table_name == "inspection_flow_graphs":
-                pass
+                if get_new_filepath:
+                    plugin_filepath = os.path.join(fissure.utils.get_plugin_fg_library_dir(os_version, self.basepath), "Inspection Flow Graphs", os.path.basename(get_new_filepath))
+                    library_filepath = os.path.join(fissure.utils.get_fg_library_dir(os_version), "Inspection Flow Graphs", os.path.basename(get_new_filepath))
+                    self.copySupportFiles(get_new_filepath, plugin_filepath, library_filepath)
             elif table_name == "modulation_types":
                 pass
             elif table_name == "packet_types":
@@ -325,9 +594,20 @@ class PluginEditor(object):
             elif table_name == "soi_data":
                 pass
             elif table_name == "triggers":
-                pass
-            else:
-                print(f"No deletion logic defined for table '{table_name}'. Skipping row: {row}")
+                if get_new_filepath:
+                    plugin_filepath = os.path.join(fissure.utils.get_plugin_fg_library_dir(os_version, self.basepath), "Triggers", os.path.basename(get_new_filepath))
+                    library_filepath = os.path.join(fissure.utils.get_fg_library_dir(os_version), "Triggers", os.path.basename(get_new_filepath))
+                    self.copySupportFiles(get_new_filepath, plugin_filepath, library_filepath)
+    
+
+    def copySupportFiles(self, new_filepath, plugin_fileapth, library_filepath):
+        """
+        Copies files from a local HIPRFISR computer to the plugin folder and FISSURE library.
+        """
+        os.makedirs(os.path.dirname(plugin_fileapth), exist_ok=True)
+        shutil.copy2(new_filepath, plugin_fileapth)
+        shutil.copy2(new_filepath, library_filepath)
+
 
     ##########################################################################
     # def get_protocols(self):

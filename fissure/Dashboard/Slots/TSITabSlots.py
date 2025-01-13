@@ -2158,59 +2158,36 @@ def _slotTSI_ConditionerSettingsViewClicked(dashboard: QtCore.QObject):
     """ 
     Opens visualization (GNU Radio Companion flow graph, image, code) for the isolation technique.
     """
-    # View if Possible
+    # Gather Details
     get_category = str(dashboard.ui.comboBox_tsi_conditioner_settings_isolation_category.currentText())
     get_method = str(dashboard.ui.comboBox_tsi_conditioner_settings_isolation_method.currentText())
     get_type = str(dashboard.ui.comboBox_tsi_conditioner_input_data_type.currentText())
-    
-    # Flow Graph Directory
-    if get_type == "Complex Float 32":
-        fg_directory = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "TSI Flow Graphs", "Conditioner", "File_Source", "Flow_Graphs", "ComplexFloat32")
-    elif get_type == "Complex Int 16":
-        fg_directory = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "TSI Flow Graphs", "Conditioner", "File_Source", "Flow_Graphs", "ComplexInt16")
 
-    # Method1: burst_tagger
-    if (get_category == "Energy - Burst Tagger") and (get_method == "Normal"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "normal.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method2: burst_tagger with Decay
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Normal Decay"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "normal_decay.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method3: power_squelch_with_burst_tagger
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "power_squelch.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method4: lowpass_filter
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Lowpass"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "lowpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method5: power_squelch_lowpass
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch then Lowpass"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "power_squelch_lowpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-        
-    # Method6: bandpass_filter
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Bandpass"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "bandpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-        
-    # Method7: strongest
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Strongest Frequency then Bandpass"):
-        filepath1 = os.path.join(fg_directory, "fft", "strongest.grc")
-        filepath2 = os.path.join(fg_directory, "burst_tagger", "bandpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath1 + '" "' + filepath2
-        os.system(osCommandString + '" &')
+    if get_method == "None":
+        return
+
+    # Retrieve Filepath and File Type
+    get_filepath, get_file_type = fissure.utils.library.getConditionerFilepath(
+        dashboard.backend.library, 
+        get_category, 
+        get_method,
+        "File",
+        get_type,
+        fissure.utils.get_library_version()
+    )
+
+    # Open File
+    if get_filepath:
+        fg_directory = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "TSI Flow Graphs", "Conditioner", get_filepath)
+        if get_file_type == "Flow Graph":
+            fg_directory = fg_directory.replace(".py", ".grc")
+            osCommandString = 'gnuradio-companion "' + fg_directory + '"'
+            try:
+                os.system(osCommandString + ' &')
+            except Exception as e:
+                dashboard.logger.error(f"Could not open Conditioner flow graph with command: {osCommandString}. Error: {e}")
+        else:
+            dashboard.logger.error("Unknown file type")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -6155,55 +6132,37 @@ def _slotTSI_ConditionerSettingsFrequenciesViewClicked(dashboard: QtCore.QObject
     """ 
     Opens visualization (GNU Radio Companion flow graph, image, code) for the isolation technique.
     """
-    # View if Possible
-    get_category = str(dashboard.ui.comboBox_tsi_conditioner_settings_isolation_category.currentText())
-    get_method = str(dashboard.ui.comboBox_tsi_conditioner_settings_isolation_method.currentText())
-    
-    # Flow Graph Directory
-    fg_directory = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "TSI Flow Graphs", "Conditioner", "Hardware_Source", "Flow_Graphs")
+    # Gather Details
+    get_category = str(dashboard.ui.comboBox_tsi_conditioner_settings_isolation_frequencies_category.currentText())
+    get_method = str(dashboard.ui.comboBox_tsi_conditioner_settings_isolation_frequencies_method.currentText())
+    get_type = "Complex Float 32"  # Support other types eventually? Ignore checks for this?
+    get_hardware = str(dashboard.ui.comboBox_tsi_conditioner_settings_isolation_hardware.currentText()).split(" - ")[0].strip()
 
-    # Method1: burst_tagger
-    if (get_category == "Energy - Burst Tagger") and (get_method == "Normal"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "normal.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method2: burst_tagger with Decay
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Normal Decay"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "normal_decay.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method3: power_squelch_with_burst_tagger
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "power_squelch.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method4: lowpass_filter
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Lowpass"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "lowpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-    
-    # Method5: power_squelch_lowpass
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch then Lowpass"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "power_squelch_lowpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-        
-    # Method6: bandpass_filter
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Bandpass"):
-        filepath = os.path.join(fg_directory, "burst_tagger", "bandpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath
-        os.system(osCommandString + '" &')
-        
-    # Method7: strongest
-    elif (get_category == "Energy - Burst Tagger") and (get_method == "Strongest Frequency then Bandpass"):
-        filepath1 = os.path.join(fg_directory, "fft", "strongest.grc")
-        filepath2 = os.path.join(fg_directory, "burst_tagger", "bandpass.grc")
-        osCommandString = 'gnuradio-companion "' + filepath1 + '" "' + filepath2
-        os.system(osCommandString + '" &')
+    if get_method == "None":
+        return
+
+    # Retrieve Filepath and File Type
+    get_filepath, get_file_type = fissure.utils.library.getConditionerFilepath(
+        dashboard.backend.library, 
+        get_category, 
+        get_method,
+        get_hardware,
+        get_type,
+        fissure.utils.get_library_version()
+    )
+
+    # Open File
+    if get_filepath:
+        fg_directory = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "TSI Flow Graphs", "Conditioner", get_filepath)
+        if get_file_type == "Flow Graph":
+            fg_directory = fg_directory.replace(".py", ".grc")
+            osCommandString = 'gnuradio-companion "' + fg_directory + '"'
+            try:
+                os.system(osCommandString + ' &')
+            except Exception as e:
+                dashboard.logger.error(f"Could not open Conditioner flow graph with command: {osCommandString}. Error: {e}")
+        else:
+            dashboard.logger.error("Unknown file type")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
