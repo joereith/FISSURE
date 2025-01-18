@@ -950,7 +950,7 @@ class Dashboard(QtWidgets.QMainWindow):
             self.window.actionSigDigger.setEnabled(False)
             self.window.actionSystemback.setEnabled(False)
             self.window.actionguidus.setEnabled(False)
-            self.window.actionICE9_Bluetooth_Sniffer.setEnabled(False)
+            self.window.actionICE9_Bluetooth_Scanner.setEnabled(False)
             self.window.actionOpenWebRX.setEnabled(False)
             self.window.actionRadiosonde_auto_rx.setEnabled(False)
         elif get_os == 'Ubuntu 24.04':

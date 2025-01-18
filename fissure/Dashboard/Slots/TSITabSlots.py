@@ -4882,7 +4882,10 @@ def _slotTSI_ClassifierTrainingNetronClicked(dashboard: QtCore.QObject):
             model_directory = os.path.join(fissure.utils.CLASSIFIER_DIR, "Models", "DNN")
         else:
             return
-    proc=subprocess.Popen('netron "' + get_model + '"', cwd=model_directory, shell=True)
+    if dashboard.backend.os_info == "Raspberry Pi OS":
+        proc=subprocess.Popen('npm start', cwd="~/Installed_by_FISSURE/netron/", shell=True)
+    else:
+        proc=subprocess.Popen('netron "' + get_model + '"', cwd=model_directory, shell=True)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -4897,7 +4900,10 @@ def _slotTSI_ClassifierTrainingResultsNetronClicked(dashboard: QtCore.QObject):
         get_model = os.path.join(fissure.utils.CLASSIFIER_DIR, "Models", "tmp.h5")
     else:
         return
-    proc=subprocess.Popen('netron "' + get_model + '"', shell=True)
+    if dashboard.backend.os_info == "Raspberry Pi OS":
+        proc=subprocess.Popen('npm start', cwd="~/Installed_by_FISSURE/netron/", shell=True)
+    else:
+        proc=subprocess.Popen('netron "' + get_model + '"', shell=True)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -5461,7 +5467,10 @@ def _slotTSI_ClassifierClassificationNetronClicked(dashboard: QtCore.QObject):
             model_directory = os.path.join(fissure.utils.CLASSIFIER_DIR, "Models", "DNN")
         else:
             return
-    proc=subprocess.Popen('netron "' + get_model + '"', cwd=model_directory, shell=True)
+    if dashboard.backend.os_info == "Raspberry Pi OS":
+        proc=subprocess.Popen('npm start', cwd="~/Installed_by_FISSURE/netron/", shell=True)
+    else:
+        proc=subprocess.Popen('netron "' + get_model + '"', cwd=model_directory, shell=True)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

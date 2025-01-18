@@ -1,6 +1,22 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2025-1-18
+
+Fixing Raspberry Pi OS installation errors.
+
+### Changed
+
+- Adjusted how netron is called for Raspberry Pi OS. User must manually browse for model file.
+- openDatabaseConnection() attempts 10 retries with 2 second intervals when trying to connect to the database.
+
+### Fixed
+
+- Renamed actionICE9_Bluetooth_Sniffer to actionICE9_Bluetooth_Scanner in Frontend.py for Raspberry Pi OS 
+- Updated installation for netron for Raspberry Pi OS
+- Updated installation for docker for Raspberry Pi OS in PostgreSQL Database and IQEngine
+- Database connection error when launching FISSURE for the first time
+
 ## 2025-1-13
 
 Plugin updates for Library tab.

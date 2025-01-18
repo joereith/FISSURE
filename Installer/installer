@@ -12869,8 +12869,15 @@ sudo python3 -m pip install sounddevice --break-system-packages
 sudo python3 -m pip install qasync --break-system-packages
 sudo python3 -m pip install pydotplus --break-system-packages
 sudo python3 -m pip install tensorflow --break-system-packages
-sudo apt-get install -y snapd
-sudo snap install netron
+
+sudo apt install -y nodejs npm build-essential libgtk-3-dev libwebkit2gtk-4.0-dev  # netron
+mkdir -p ~/Installed_by_FISSURE  # netron
+cd ~/Installed_by_FISSURE  # netron
+git clone https://github.com/lutzroeder/netron.git  # netron
+cd netron  # netron
+npm install  # netron
+npm run electron:build  # netron
+
 sudo python3 -m pip install ipython --break-system-packages
 sudo python3 -m pip install scikit-learn==1.3.2 --break-system-packages
 sudo python3 -m pip install opencv-python --break-system-packages
@@ -12960,8 +12967,14 @@ programs_raspberry_pi_os.append(('PostgreSQL Database',
 """sudo python3 -m pip install python-dotenv --break-system-packages
 sudo apt-get install -y libpq-dev
 sudo python3 -m pip install psycopg2 --break-system-packages
-sudo apt-get install -y docker.io docker-compose-v2
+
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo apt-get install -y docker-compose-plugin
 sudo usermod -aG docker ${USER}  # Reboot computer to use docker commands without sudo
+
 sudo apt install -y postgresql-client
 cd '""" + fissure_directory + """'
 cp example.env .env
@@ -14908,11 +14921,12 @@ programs_raspberry_pi_os.append(('IQEngine',
   echo "Docker is installed."
 else
   echo "Docker is not installed."
-  sudo apt-get install -y docker.io
-  #sudo systemctl start docker
-  #sudo systemctl enable docker
+  mkdir -p ~/Installed_by_FISSURE
+  cd ~/Installed_by_FISSURE/
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sudo sh get-docker.sh
+  sudo apt-get install -y docker-compose-plugin
   sudo usermod -aG docker ${USER}  # Reboot computer to use docker commands without sudo
-  #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE

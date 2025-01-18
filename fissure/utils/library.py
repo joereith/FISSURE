@@ -5,30 +5,73 @@ from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import sql
 from psycopg2.extensions import connection
+from psycopg2 import OperationalError
 from fissure.utils import FISSURE_ROOT, get_fg_library_dir
 from decimal import Decimal
 from datetime import datetime, date
 import json
 import re
 from typing import List
+import time
 
 
-def openDatabaseConnection() -> connection:
+# def openDatabaseConnection() -> connection:
+#     """
+#     Connects to the FISSURE database at the HIPRFISR computer/network.
+#     """
+#     # Load environment variables from .env file
+#     load_dotenv(os.path.join(FISSURE_ROOT,".env"))
+
+#     # Connect to PostgreSQL database
+#     conn = psycopg2.connect(
+#         dbname = os.getenv('POSTGRES_DB'),
+#         user = os.getenv('POSTGRES_USER'),
+#         password = os.getenv('POSTGRES_PASSWORD'),
+#         host = os.getenv('POSTGRES_HOST', 'localhost'),
+#         port = os.getenv('POSTGRES_PORT', '5432')
+#     )
+#     return conn
+
+
+def openDatabaseConnection(retries=10, delay=2) -> connection:
     """
     Connects to the FISSURE database at the HIPRFISR computer/network.
+    Waits for the database to be ready before connecting.
+    
+    Args:
+        retries (int): Maximum number of retries before giving up.
+        delay (int): Delay between retries in seconds.
+    
+    Returns:
+        connection: A psycopg2 connection object to the database.
     """
     # Load environment variables from .env file
-    load_dotenv(os.path.join(FISSURE_ROOT,".env"))
+    load_dotenv(os.path.join(FISSURE_ROOT, ".env"))
 
-    # Connect to PostgreSQL database
-    conn = psycopg2.connect(
-        dbname = os.getenv('POSTGRES_DB'),
-        user = os.getenv('POSTGRES_USER'),
-        password = os.getenv('POSTGRES_PASSWORD'),
-        host = os.getenv('POSTGRES_HOST', 'localhost'),
-        port = os.getenv('POSTGRES_PORT', '5432')
-    )
-    return conn
+    dbname = os.getenv('POSTGRES_DB')
+    user = os.getenv('POSTGRES_USER')
+    password = os.getenv('POSTGRES_PASSWORD')
+    host = os.getenv('POSTGRES_HOST', 'localhost')
+    port = os.getenv('POSTGRES_PORT', '5432')
+
+    for attempt in range(retries):
+        try:
+            # Attempt to connect to the database
+            conn = psycopg2.connect(
+                dbname=dbname,
+                user=user,
+                password=password,
+                host=host,
+                port=port
+            )
+            print("Database connection established.")
+            return conn
+        except OperationalError as e:
+            print(f"Database not ready, retrying in {delay} seconds... (Attempt {attempt + 1}/{retries})")
+            time.sleep(delay)
+    
+    # Raise an exception if all retries are exhausted
+    raise RuntimeError("Failed to connect to the database after multiple retries.")
 
 
 def cacheTableData(source="Dashboard"):
@@ -79,6 +122,7 @@ def cacheTableData(source="Dashboard"):
     # Load environment variables from .env file
     load_dotenv(os.path.join(FISSURE_ROOT,".env"))
 
+    conn = None
     try:
         # Connect to PostgreSQL database
         conn = openDatabaseConnection()
