@@ -8,6 +8,7 @@ Updating FISSURE Challenge text in README
 ### Changed
 
 - Updated FISSURE Challenge details in README
+- Updated current openings link in README
 
 ## 2025-1-18
 

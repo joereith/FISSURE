@@ -402,7 +402,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 
 The "FISSURE Challenge" capture-the-flag contest has been updated to be an indefinite learning tool instead of an annual event. Challenges will be added over time to showcase new features and RF protocols. Solutions will be posted periodically on YouTube. You are welcome to submit your own challenges for others to try.
 
-Access the challenges at: [FISSURE Challenge](https://fissure.ainfosec.com/).
+Access the challenges at: [FISSURE Challenge](https://fissure.ainfosec.com/)
 
 Can't figure something out? View solutions at:
 - [Solutions 1](https://www.youtube.com/watch?v=jYtqWwG_-kI)
@@ -462,7 +462,7 @@ Special thanks to Dr. Samuel Mantravadi and Joseph Reith for their contributions
 <img src="/docs/Icons/README/logo1.png">
 
 ## Assured Information Security
-Like working with signals, reverse engineering, or other realms in cybersecurity? Browse our [current openings](https://recruiting.ultipro.com/ASS1020AURI/JobBoard/f94fabce-76a2-4d69-9ce7-0b8a7a9f7c34/?q=&o=postedDateDesc) or join our [talent community](https://www.ainfosec.com/careers/#talent-community) for future consideration. 
+Like working with signals, reverse engineering, or other realms in cybersecurity? Browse our [current openings](https://recruiting.paylocity.com/recruiting/jobs/All/4cc515ee-a8ad-4e3a-ac7d-c105c5d24074/ASSURED-INFORMATION-SECURITY-INC) or join our [talent community](https://www.ainfosec.com/careers/#talent-community) for future consideration. 
 
 If you have an interest in hacking, check out our [Can You Hack It?®](https://www.canyouhackit.com) challenge and test your skills! Submit your score to show us what you’ve got. AIS has a national footprint with offices and remote employees across the U.S. We offer competitive pay and outstanding benefits. Join a team that is not only committed to the future of cyberspace, but to our employee’s success as well.
 
