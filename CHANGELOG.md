@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2025-1-20
+
+Updating FISSURE Challenge text in README
+
+### Changed
+
+- Updated FISSURE Challenge details in README
+
 ## 2025-1-18
 
 Fixing Raspberry Pi OS installation errors.
