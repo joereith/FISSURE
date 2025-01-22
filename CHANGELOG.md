@@ -1,6 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2025-1-22
+
+Adding Alerts tab.
+
+### Added
+
+- Sensor Nodes>Alerts tab
+- Alerts checkbox in Log tab
+- alertsReturn() in DashboardCallbacks.py
+
+### Fixed
+
+- Fixed FISSURE Challenge image link in README
+
 ## 2025-1-20
 
 Updating FISSURE Challenge text in README

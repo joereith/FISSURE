@@ -121,24 +121,31 @@ def _slotLogSaveAllClicked(dashboard: QtCore.QObject):
             # Write the Current System Log Contents
             if dashboard.ui.checkBox_log_system_log.isChecked():
                 new_file.write("#########################################################################\n")
-                new_file.write("########################## System Log ##################################\n")
+                new_file.write("############################## System Log ###############################\n")
                 new_file.write("#########################################################################\n")
                 new_file.write(mylogfile.read())
 
             # Write the Attack History Contents
             if dashboard.ui.checkBox_log_attack_history.isChecked():
                 new_file.write("#########################################################################\n")
-                new_file.write("########################## Attack History ###############################\n")
+                new_file.write("############################ Attack History #############################\n")
                 new_file.write("#########################################################################\n")
                 for rows in range(0, dashboard.ui.tableWidget1_attack_attack_history.rowCount()):
                     for columns in range(0, dashboard.ui.tableWidget1_attack_attack_history.columnCount()):
                         new_file.write(dashboard.ui.tableWidget1_attack_attack_history.item(rows, columns).text() + "\t")
                     new_file.write("\n")
 
+            # Write the Alerts:
+            if dashboard.ui.checkBox_log_alerts.isChecked():
+                new_file.write("#########################################################################\n")
+                new_file.write("################################ Alerts #################################\n")
+                new_file.write("#########################################################################\n")
+                new_file.write(dashboard.ui.textEdit2_sensor_nodes_alerts.toPlainText())
+
             # Write the Session Notes:
             if dashboard.ui.checkBox_log_session_notes.isChecked():
                 new_file.write("#########################################################################\n")
-                new_file.write("########################## Session Notes ################################\n")
+                new_file.write("############################# Session Notes #############################\n")
                 new_file.write("#########################################################################\n")
                 new_file.write(dashboard.ui.textEdit1_log_notes.toPlainText())
 

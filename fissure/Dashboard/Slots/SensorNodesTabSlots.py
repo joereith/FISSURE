@@ -809,3 +809,52 @@ def _slotSensorNodesAutorunTriggersClearClicked(dashboard: QtCore.QObject):
     """
     # Remove Rows
     dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setRowCount(0)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesAlertsClearClicked(dashboard: QtCore.QObject):
+    """ 
+    Clears the Alerts text edit and resets the tab color.
+    """
+    # Clear
+    dashboard.ui.textEdit2_sensor_nodes_alerts.clear()
+
+    # Reset Tab Text
+    dashboard.ui.tabWidget_sensor_nodes.tabBar().setTabText(3,"Alerts")
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesAlertsSaveClicked(dashboard: QtCore.QObject):
+    """ 
+    Saves the alerts to a text file.
+    """
+    # Define the default directory
+    directory = os.path.join(fissure.utils.LOG_DIR, "Session Logs")
+
+    # Open the Save File Dialog
+    dialog = QtWidgets.QFileDialog()
+    dialog.setDirectory(directory)
+    dialog.setFilter(dialog.filter() | QtCore.QDir.Hidden)
+    dialog.setDefaultSuffix('txt')
+    dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+    dialog.setNameFilters(['Text Files (*.txt)'])
+    
+    if dialog.exec_() == QtWidgets.QDialog.Accepted:
+        # Get the selected file path
+        fname = dialog.selectedFiles()[0]
+
+        # Ensure the file has the correct extension
+        if not fname.lower().endswith(".txt"):
+            fname += ".txt"
+
+        try:
+            # Write the text content to the file
+            with open(fname, 'w', encoding='utf-8') as new_file:
+                new_file.write(dashboard.ui.textEdit2_sensor_nodes_alerts.toPlainText())
+            print(f"File saved successfully at: {fname}")
+        except Exception as e:
+            print(f"Error saving file: {e}")
+    else:
+        print("File save dialog was canceled.")
+
+

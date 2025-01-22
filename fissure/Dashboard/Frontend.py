@@ -3800,7 +3800,13 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_autorun_triggers_clear.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesAutorunTriggersClearClicked(dashboard)
-    ) 
+    )
+    dashboard.ui.pushButton_sensor_nodes_alerts_clear.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAlertsClearClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_alerts_save.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAlertsSaveClicked(dashboard)
+    )
 
     # create connections for sensor nodes pluginsList tab
     SensorNodesPluginsTabSlots.connect_plugins_slots(dashboard)

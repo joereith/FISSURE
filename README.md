@@ -395,7 +395,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 ## FISSURE Challenge
 
 <p align="center">
-  <a href="https://www.ainfosec.com/">
+  <a href="https://fissure.ainfosec.com/">
     <img src="/docs/Icons/README/fissure_challenge.jpeg" alt="fissure_challenge" height="150" />
   </a>
 </p>

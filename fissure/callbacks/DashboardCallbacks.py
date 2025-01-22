@@ -10,6 +10,7 @@ import asyncio
 from typing import List
 import json
 import qasync
+import datetime
 
 from fissure.Dashboard.UI_Components.Qt5 import MyMessageBox
 # from ..Dashboard.Slots import StatusBarSlots  # how do you go from callbacks to slots?
@@ -1505,3 +1506,51 @@ async def responsePluginProtocolParameters(component: object, plugin_name: str, 
                 tableWidget_protocol_packet_type.setItem(r, c, QtWidgets.QTableWidgetItem(row[c]))
     else:
         tableWidget_protocol_packet_type.setRowCount(0)
+
+
+async def alertReturn(component: object, sensor_node_id=0, alert_text=""):
+    """ 
+    Updates the Sensor Nodes Alert tab with a new alert.
+    """
+    # Get Sensor Node Nickname
+    if sensor_node_id == 0:
+        get_nickname = component.settings['sensor_node1']['nickname']
+    elif sensor_node_id == 1:
+        get_nickname = component.settings['sensor_node2']['nickname']
+    elif sensor_node_id == 2:
+        get_nickname = component.settings['sensor_node3']['nickname']
+    elif sensor_node_id == 3:
+        get_nickname = component.settings['sensor_node4']['nickname']
+    elif sensor_node_id == 4:
+        get_nickname = component.settings['sensor_node5']['nickname']
+    else:
+        get_nickname = ""
+
+    # Generate a timestamp
+    timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+    sensor_node_text = "[" + get_nickname + "]"
+    formatted_message = f"{timestamp} {sensor_node_text} {alert_text}"
+
+    # Append the message
+    current_content = component.frontend.ui.textEdit2_sensor_nodes_alerts.toPlainText()
+    updated_content = current_content + '\n' + formatted_message if current_content else formatted_message
+
+    component.frontend.ui.textEdit2_sensor_nodes_alerts.setPlainText(updated_content)
+    component.frontend.ui.textEdit2_sensor_nodes_alerts.verticalScrollBar().setValue(component.frontend.ui.textEdit2_sensor_nodes_alerts.verticalScrollBar().maximum())
+
+    # Update the Alerts Text
+    current_text = component.frontend.ui.tabWidget_sensor_nodes.tabBar().tabText(3)
+    if "(" in current_text and ")" in current_text:
+        base_text, count = current_text.rsplit("(", 1)
+        count = count.rstrip(")")
+        try:
+            current_count = int(count)
+        except ValueError:
+            current_count = 0
+    else:
+        base_text = current_text
+        current_count = 0
+
+    new_count = current_count + 1
+    new_text = f"{base_text.strip()} ({new_count})"
+    component.frontend.ui.tabWidget_sensor_nodes.tabBar().setTabText(3, new_text)
