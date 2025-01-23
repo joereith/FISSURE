@@ -3058,11 +3058,11 @@ def _slotMenuBlessHexEditorClicked(dashboard: QtWidgets.QMainWindow):
     # Issue the Command
     expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
     if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
-        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "bless"', shell=True)
+        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "bless-unofficial.bless"', shell=True)
     elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
-        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "bless"', shell=True)
+        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "bless-unofficial.bless"', shell=True)
     elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
-        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "bless"', shell=True)
+        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "bless-unofficial.bless"', shell=True)
 
 
 @QtCore.pyqtSlot()
