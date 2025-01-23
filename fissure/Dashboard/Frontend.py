@@ -954,7 +954,7 @@ class Dashboard(QtWidgets.QMainWindow):
             self.window.actionOpenWebRX.setEnabled(False)
             self.window.actionRadiosonde_auto_rx.setEnabled(False)
         elif get_os == 'Ubuntu 24.04':
-            self.window.actionSrsLTE.setEnabled(False)
+            self.window.actionSrsLTE.setEnabled(True)
             self.window.action4G_IMSI_Catcher.setEnabled(False)
             self.window.actionSdrGlut.setEnabled(False)
             self.window.actionFALCON.setEnabled(False)
@@ -968,7 +968,7 @@ class Dashboard(QtWidgets.QMainWindow):
         if any(keyword == get_os for keyword in fissure.utils.OS_3_8_KEYWORDS):
             self.window.actionwl_color_picker.setEnabled(False)
             self.window.actiontpms_rx.setEnabled(False)
-            self.window.actionBaudline.setEnabled(False)
+            self.window.actionBaudline.setEnabled(True)
 
         # Disable Menu Items for all maint-3.10 Operating Systems
         # elif any(keyword == get_os for keyword in fissure.utils.OS_3_10_KEYWORDS):
@@ -980,7 +980,7 @@ class Dashboard(QtWidgets.QMainWindow):
             self.window.actionSimpleScreenRecorder.setEnabled(False)
             self.window.actionGr_air_modes.setEnabled(False)
             self.window.actionAiS_TX.setEnabled(False)
-            self.window.actionBaudline.setEnabled(False)
+            self.window.actionBaudline.setEnabled(True)
 
 
     def load_MPL_components(self):
@@ -3800,13 +3800,7 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_autorun_triggers_clear.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesAutorunTriggersClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_alerts_clear.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAlertsClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_alerts_save.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAlertsSaveClicked(dashboard)
-    )
+    ) 
 
     # create connections for sensor nodes pluginsList tab
     SensorNodesPluginsTabSlots.connect_plugins_slots(dashboard)
