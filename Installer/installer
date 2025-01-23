@@ -18377,26 +18377,17 @@ ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
 
 # SdrGlut
 programs_ubuntu24_04.append(('SdrGlut (364.9 MB)',
-"""sudo apt-get install -y librtaudio-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev 
+"""sudo apt-get install -y build-essential libwxgtk3.2-dev libglew-dev libusb-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3-dev libalut-dev libsndfile1-dev librtaudio-dev libhdf4-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone https://github.com/jgaeddert/liquid-dsp.git
-cd liquid-dsp/
-./bootstrap.sh
-./configure
-make
-sudo make install
-sudo ldconfig
-cd ~/Installed_by_FISSURE
-git clone https://github.com/righthalfplane/SdrGlut.git
-cp -f """ + fissure_directory + """/Tools/SdrGlut/firstFile.h ~/Installed_by_FISSURE/SdrGlut/MainSource/
-cp -f """ + fissure_directory + """/Tools/SdrGlut/makefileUbunta ~/Installed_by_FISSURE/SdrGlut/makefileUbunta
+git clone --depth=1 https://github.com/righthalfplane/SdrGlut.git
 cd SdrGlut
-sudo cp /usr/local/lib/libliquid.a.1.5 /usr/local/lib/libliquid.a  # Certain libliquid versions renamed this file
-make -f makefileUbunta
+make -f makefileUbuntu -j 8
+cd iqSDR
+make -f makefileUbuntuOLD -j 8
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
-""",False,'SDR'))
+""",True,'SDR'))
 
 # rehex
 programs_ubuntu24_04.append(('rehex (76.98 MB)',
