@@ -956,7 +956,7 @@ class Dashboard(QtWidgets.QMainWindow):
         elif get_os == 'Ubuntu 24.04':
             self.window.actionSrsLTE.setEnabled(True)
             self.window.action4G_IMSI_Catcher.setEnabled(False)
-            self.window.actionSdrGlut.setEnabled(False)
+            self.window.actionSdrGlut.setEnabled(True)
             self.window.actionFALCON.setEnabled(False)
             self.window.actionNETATTACK2.setEnabled(False)
             self.window.actionSigDigger.setEnabled(True)
