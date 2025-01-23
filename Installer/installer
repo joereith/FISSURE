@@ -18041,7 +18041,7 @@ sudo python3 -m pip install -U pyyaml --break-system-packages
 
 # srsRAN/srsLTE
 programs_ubuntu24_04.append(('srsRAN (362.31 MB)',
-"""sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
+"""sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev gcc-11 g++-11
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -20179,7 +20179,7 @@ sudo python3 -m pip install -U pyyaml --break-system-packages
 
 # srsRAN/srsLTE
 programs_arch_linux.append(('srsRAN (362.31 MB)',
-"""sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev gcc-11 g++-11
+"""sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
