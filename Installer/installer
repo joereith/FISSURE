@@ -18778,10 +18778,10 @@ anki -h
 
 # Bless
 programs_ubuntu24_04.append(('Bless (4.00 kB)',
-"""sudo apt-get install -y bless  # Too much wrong with it to build from source
+"""sudo snap install bless-unofficial
 ########## Verify ##########
-ls /usr/bin/bless
-""",False,'Data'))
+snap list bless-unofficial
+""",True,'Data'))
 
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_ubuntu24_04.append(('trackerjacker (2.49 MB)',
