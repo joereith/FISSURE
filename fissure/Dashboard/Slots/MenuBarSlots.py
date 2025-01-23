@@ -3537,17 +3537,17 @@ def _slotMenuSigDiggerClicked(dashboard: QtWidgets.QMainWindow):
         if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
             if any(keyword == dashboard.backend.os_info for keyword in fissure.utils.OS_3_10_KEYWORDS):
                 sigdigger_location = os.path.expanduser("~/Installed_by_FISSURE/SigDigger/")
-                proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True, cwd=sigdigger_location)
+                proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "sudo ./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True, cwd=sigdigger_location)
             else:
-                proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True)
+                proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "sudo ./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True)
         elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
-            proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True)
+            proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "sudo ./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True)
         elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
             if any(keyword == dashboard.backend.os_info for keyword in fissure.utils.OS_3_10_KEYWORDS):
                 sigdigger_location = os.path.expanduser("~/Installed_by_FISSURE/SigDigger/")
-                proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True, cwd=sigdigger_location)
+                proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "sudo ./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True, cwd=sigdigger_location)
             else:
-                proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True)
+                proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "sudo ./SigDigger-0.3.0-x86_64-full.AppImage"', shell=True)
     except:
         dashboard.logger.error("Error accessing SigDigger location.")
 
