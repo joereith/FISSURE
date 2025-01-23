@@ -681,7 +681,7 @@ def _slotMenuSrsLTE_Clicked(dashboard: QtWidgets.QMainWindow):
     # Two Terminals
     expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
     if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
-        srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/srsepc")
+        srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN_4G/srsepc")
         proc = subprocess.Popen(
             "gnome-terminal -- " + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"',
             cwd=srsLTE_dir,
@@ -694,7 +694,7 @@ def _slotMenuSrsLTE_Clicked(dashboard: QtWidgets.QMainWindow):
         )
     elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
         if dashboard.backend.os_info == "DragonOS Focal" or dashboard.backend.os_info == "DragonOS FocalX":
-            srsLTE_dir = "/usr/src/srsRAN/srsepc"
+            srsLTE_dir = "/usr/src/srsRAN_4G/srsepc"
             proc = subprocess.Popen(
                 "qterminal -e " + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"',
                 cwd=srsLTE_dir,
@@ -706,11 +706,11 @@ def _slotMenuSrsLTE_Clicked(dashboard: QtWidgets.QMainWindow):
                 shell=True,
             )
         else:
-            srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/srsepc")
+            srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN_4G/srsepc")
             proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)
             proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
     elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
-        srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/srsepc")
+        srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN_4G/srsepc")
         proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)
         proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
    
@@ -1107,7 +1107,7 @@ def _slotMenuLimeUtilUpdateClicked(dashboard: QtWidgets.QMainWindow):
 def _slotMenuBaudlineClicked(dashboard: QtWidgets.QMainWindow):
     """Opens baudline - the time-frequency browser designed for scientific visualization of the spectral domain."""
     # Issue the Command
-    baudline_command = os.path.expanduser("~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline")
+    baudline_command = os.path.expanduser("~/Installed_by_FISSURE/baudline/Baudline-For-Linux/baudline")
     expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
     if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
         proc = subprocess.Popen(
@@ -3058,11 +3058,11 @@ def _slotMenuBlessHexEditorClicked(dashboard: QtWidgets.QMainWindow):
     # Issue the Command
     expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
     if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
-        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "bless"', shell=True)
+        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "bless-unofficial.bless"', shell=True)
     elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
-        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "bless"', shell=True)
+        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "bless-unofficial.bless"', shell=True)
     elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
-        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "bless"', shell=True)
+        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "bless-unofficial.bless"', shell=True)
 
 
 @QtCore.pyqtSlot()
