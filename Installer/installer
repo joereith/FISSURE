@@ -18048,7 +18048,9 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/srsLTE/srsGUI.git
 cd srsGUI
 mkdir build
-cd build 
+cd build
+export CC=$(which gcc-11)
+export CXX=$(which g++-11)
 cmake ..
 make
 sudo make install
@@ -20194,8 +20196,6 @@ cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed
 cd srsRAN_4G/
 mkdir build
 cd build
-export CC=$(which gcc-11)
-export CXX=$(which g++-11)
 cmake ../
 make
 sudo make install
