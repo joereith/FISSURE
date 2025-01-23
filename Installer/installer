@@ -18053,9 +18053,9 @@ cmake ..
 make
 sudo make install
 cd ~/Installed_by_FISSURE
-git clone https://github.com/srsRAN/srsRAN.git
-cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed_by_FISSURE/srsRAN/lib/examples/  # IMSI-Catcher 4G
-cd srsRAN/
+git clone https://github.com/srsRAN/srsRAN_4G.git
+cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed_by_FISSURE/srsRAN_4G/lib/examples/  # IMSI-Catcher 4G
+cd srsRAN_4G/
 mkdir build
 cd build
 cmake ..
@@ -20177,7 +20177,7 @@ sudo python3 -m pip install -U pyyaml --break-system-packages
 
 # srsRAN/srsLTE
 programs_arch_linux.append(('srsRAN (362.31 MB)',
-"""sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
+"""sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev gcc-11 g++-11
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -20189,12 +20189,14 @@ cmake ..
 make
 sudo make install
 cd ~/Installed_by_FISSURE
-git clone https://github.com/srsRAN/srsRAN.git
-cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed_by_FISSURE/srsRAN/lib/examples/  # IMSI-Catcher 4G
-cd srsRAN/
+git clone https://github.com/srsRAN/srsRAN_4G.git
+cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed_by_FISSURE/srsRAN_4G/lib/examples/  # IMSI-Catcher 4G
+cd srsRAN_4G/
 mkdir build
 cd build
-cmake ..
+export CC=$(which gcc-11)
+export CXX=$(which g++-11)
+cmake ../
 make
 sudo make install
 sudo ldconfig
