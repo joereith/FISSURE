@@ -2486,15 +2486,16 @@ class SensorNode():
                 self.logger.info("Looping")
                 time.sleep(0.2)
             
-            # Repeat for Another Loop
+           # Repeat for Another Loop
             if get_repetition_interval > 0:
-                self.logger.info("Sleeping until next playlist run.")
-                time.sleep(get_repetition_interval)
-                self.logger.info("Done sleeping.")
-                
                 # Exit if Stop is Clicked
                 if self.autorun_playlist_stop_event.is_set():
                     break
+
+                # Sleep for Repetition Interval
+                self.logger.info("Sleeping until next playlist run.")
+                time.sleep(get_repetition_interval)
+                self.logger.info("Done sleeping.")   
             else:
                 break
     
